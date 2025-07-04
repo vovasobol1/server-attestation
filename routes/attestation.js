@@ -17,6 +17,34 @@ router.post('/', async (req, res) => {
     } = req.body;
 
     try {
+        const existing = await prisma.attestation.findUnique({
+            where: { passport: req.body.passport }
+        });
+
+
+        if (existing) {
+            const updated = await prisma.attestation.update({
+                where: { passport },
+                data: {
+                    fullName,
+                    passportCountry,
+                    profession,
+                    visitDate,
+                    conviction,
+                    rfBan,
+                    photoUrls,
+                    attestations,
+                }
+            });
+
+            return res.status(200).json({
+                message: 'Запись обновлена',
+                certificateNumber: updated.certificateNumber,
+                attestation: updated
+            });
+        }
+
+
         // Сначала получаем последний номер сертификата
         const lastCert = await prisma.attestation.findFirst({
             orderBy: { certificateNumber: 'desc' },
