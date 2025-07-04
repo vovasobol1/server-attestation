@@ -27,5 +27,6 @@ model Attestation {
   photoUrls      String[]
   status         String   @default("draft")
   createdAt      DateTime @default(now())
+  certificateNumber Int      @default(autoincrement())
 }
 

@@ -17,6 +17,14 @@ router.post('/', async (req, res) => {
     } = req.body;
 
     try {
+        // Сначала получаем последний номер сертификата
+        const lastCert = await prisma.attestation.findFirst({
+            orderBy: { certificateNumber: 'desc' },
+            select: { certificateNumber: true }
+        });
+
+        const nextCertNumber = (lastCert?.certificateNumber || 0) + 1;
+
         const attestation = await prisma.attestation.create({
             data: {
                 fullName,
@@ -28,6 +36,7 @@ router.post('/', async (req, res) => {
                 rfBan,
                 attestations ,
                 photoUrls,
+                certificateNumber: nextCertNumber
             },
         });
 
@@ -83,6 +92,16 @@ router.put('/edit/:passport', async (req, res) => {
     } = req.body;
 
     try {
+        // Получаем текущий certificateNumber и проверяем его наличие
+        const existing = await prisma.attestation.findUnique({
+            where: { passport },
+            select: { certificateNumber: true }
+        });
+
+        if (!existing) {
+            return res.status(404).json({ error: 'Запись с таким паспортом не найдена' });
+        }
+
         const updatedAttestation = await prisma.attestation.update({
             where: { passport },
             data: {
@@ -94,7 +113,8 @@ router.put('/edit/:passport', async (req, res) => {
                 rfBan,
                 photoUrls,
                 attestations,
-                status
+                status,
+                certificateNumber: existing.certificateNumber
             }
         });
 
