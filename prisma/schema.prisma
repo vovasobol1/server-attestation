@@ -20,12 +20,12 @@ model Attestation {
   passport       String   @unique
   passportCountry String
   profession     String
+  rank String?
   visitDate      DateTime?
   conviction     String
   rfBan          String
   attestations    Json?
   photoUrls      String[]
-  status         String   @default("draft")
   createdAt      DateTime @default(now())
   certificateNumber Int      @default(autoincrement())
 }
