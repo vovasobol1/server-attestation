@@ -118,7 +118,6 @@ router.put('/edit/:passport', async (req, res) => {
         rfBan,
         photoUrls,
         attestations,
-        status // опционально
     } = req.body;
 
     try {
@@ -144,7 +143,6 @@ router.put('/edit/:passport', async (req, res) => {
                 rfBan,
                 photoUrls,
                 attestations,
-                status,
                 certificateNumber: existing.certificateNumber
             }
         });
