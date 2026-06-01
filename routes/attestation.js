@@ -395,6 +395,7 @@ router.get('/export', async (req, res) => {
         const sheet = workbook.addWorksheet('Аттестации');
 
         sheet.columns = [
+            { header: '№ п/п', key: 'rowNo', width: 6 },
             { header: 'ФИО', key: 'fullName', width: 28 },
             { header: 'Паспорт', key: 'passport', width: 18 },
             { header: 'Страна', key: 'passportCountry', width: 16 },
@@ -415,7 +416,7 @@ router.get('/export', async (req, res) => {
             to: { row: 1, column: sheet.columns.length }
         };
 
-        rows.forEach(r => sheet.addRow(r));
+        rows.forEach((r, i) => sheet.addRow({ rowNo: i + 1, ...r }));
 
         const fileDate = formatDateRu(new Date()).split('.').reverse().join('-'); // YYYY-MM-DD
         const fileName = `attestations_${fileDate}.xlsx`;
